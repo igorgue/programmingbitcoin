@@ -192,12 +192,27 @@ class Point:
             return self.__class__(x, y, self.a, self.b)
 
     def __rmul__(self, coefficient):
-        product = self.__class__(None, None, self.a, self.b)
+        # Inefficient way
+        #product = self.__class__(None, None, self.a, self.b)
 
-        for _ in range(coefficient):
-            product += self
+        #for _ in range(coefficient):
+            #product += self
 
-        return product
+        #return product
+
+        # Efficient way
+        coef = coefficient
+        current = self
+        result = self.__class__(None, None, self.a, self.b)
+
+        while coef:
+            if coef & 1:
+                result += current
+
+            current += current
+            coef >>= 1
+
+        return result
 
 class ECCTest(TestCase):
     def test_on_curve(self):
@@ -262,3 +277,15 @@ class ECCTest(TestCase):
         result = Point(None, None, a, b)
 
         self.assertTrue(7 * p, result)
+
+P = (2 ** 255) + (2 ** 32) - 977
+
+class S256Field(FieldElement):
+    def __init__(self, num, prime=None):
+        super().__init__(num=num, prime=P)
+
+    def __repr__(self):
+        return 'S256Field(num={num}) # => {x}'.format(
+            num=self.num,
+            x='{:x}'.format(self.num).zfill(64)
+        )
