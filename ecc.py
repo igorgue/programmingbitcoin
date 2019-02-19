@@ -285,7 +285,35 @@ class S256Field(FieldElement):
         super().__init__(num=num, prime=P)
 
     def __repr__(self):
-        return 'S256Field(num={num}) # => {x}'.format(
-            num=self.num,
-            x='{:x}'.format(self.num).zfill(64)
-        )
+        return '{:x}'.format(self.num).zfill(64)
+
+class S256FieldTest(TestCase):
+    def test_field_formatted(self):
+        f = S256Field(29384042348240928340823094823094820934820934820938402924343443434343434343432)
+
+        self.assertEqual(str(f), "40f6c75219ff1f8d9f93c30ce8a2b6455b0de6e6ea6d81659e5a71764c18d408")
+
+
+A = 0
+B = 7
+N = 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141
+
+class S256Point(Point):
+    def __init__(self, x, y, a=None, b=None):
+        a = S256Field(A)
+        b = S256Field(B)
+
+        if type(x) == int:
+            super().__init__(S256Field(x), S256Field(y), a, b)
+        else:
+            super().__init__(x, y, a, b)
+
+    def __rmul__(self, coefficient):
+        coef = coefficient % N
+
+        return super().__rmul__(coef)
+
+G = S256Point(
+    x=0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798,
+    y=0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8
+)
