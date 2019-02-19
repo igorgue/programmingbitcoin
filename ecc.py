@@ -1,4 +1,11 @@
+import sys
+
 from unittest import TestCase
+
+if sys.version_info >= (3, 0):
+    raise RuntimeError('Python {version} not supported, please use Python >= 3'.format(
+        version=sys.version.split(' ')[0]
+    ))
 
 class FieldElement:
     def __init__(self, num, prime):
@@ -7,6 +14,7 @@ class FieldElement:
                 num,
                 prime - 1
             )
+
             raise ValueError(error)
 
         self.num = num
@@ -140,6 +148,7 @@ class ECCTest(TestCase):
             y = FieldElement(y_raw, prime)
 
             Point(x, y, a, b)
+
         for x_raw, y_raw in invalid_points:
             x = FieldElement(x_raw, prime)
             y = FieldElement(y_raw, prime)
@@ -152,10 +161,6 @@ class ECCTest(TestCase):
 
         a = FieldElement(0, prime)
         b = FieldElement(7, prime)
-
-        #(192, 105, 17, 56, 170, 142),
-        #(47, 71, 117, 141, 60, 139),
-        #(143, 98, 76, 66, 47, 71),
 
         additions = [
             (
