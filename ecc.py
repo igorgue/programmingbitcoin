@@ -2,7 +2,7 @@ import sys
 
 from unittest import TestCase
 
-if sys.version_info >= (3, 0):
+if sys.version_info.major < 3:
     raise RuntimeError('Python {version} not supported, please use Python >= 3'.format(
         version=sys.version.split(' ')[0]
     ))
