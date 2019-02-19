@@ -278,7 +278,11 @@ class ECCTest(TestCase):
 
         self.assertTrue(7 * p, result)
 
-P = (2 ** 255) + (2 ** 32) - 977
+A = 0
+B = 7
+N = 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141
+P = (2 ** 256) - (2 ** 32) - 977
+
 
 class S256Field(FieldElement):
     def __init__(self, num, prime=None):
@@ -287,6 +291,7 @@ class S256Field(FieldElement):
     def __repr__(self):
         return '{:x}'.format(self.num).zfill(64)
 
+
 class S256FieldTest(TestCase):
     def test_field_formatted(self):
         f = S256Field(29384042348240928340823094823094820934820934820938402924343443434343434343432)
@@ -294,19 +299,14 @@ class S256FieldTest(TestCase):
         self.assertEqual(str(f), "40f6c75219ff1f8d9f93c30ce8a2b6455b0de6e6ea6d81659e5a71764c18d408")
 
 
-A = 0
-B = 7
-N = 0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141
-
 class S256Point(Point):
     def __init__(self, x, y, a=None, b=None):
-        a = S256Field(A)
-        b = S256Field(B)
+        a, b = S256Field(A), S256Field(B)
 
         if type(x) == int:
-            super().__init__(S256Field(x), S256Field(y), a, b)
+            super().__init__(x=S256Field(x), y=S256Field(y), a=a, b=b)
         else:
-            super().__init__(x, y, a, b)
+            super().__init__(x=x, y=y, a=a, b=b)
 
     def __rmul__(self, coefficient):
         coef = coefficient % N
@@ -314,6 +314,6 @@ class S256Point(Point):
         return super().__rmul__(coef)
 
 G = S256Point(
-    x=0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798,
-    y=0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8
+    0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798,
+    0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8
 )
